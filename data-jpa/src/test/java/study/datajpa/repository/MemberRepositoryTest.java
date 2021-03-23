@@ -153,4 +153,32 @@ class MemberRepositoryTest {
             System.out.println("member = " + member);
         }
     }
+
+    @Test
+    public void returnType(){
+        Member m1 = new Member("AAA",10);
+        memberRepository.save(m1);
+
+        List<Member> aaa = memberRepository.findListByUsername("AAA");
+        System.out.println("aaa = " + aaa);
+        Optional<Member> aa2 = memberRepository.findOptionalByUsername("AAA");
+        System.out.println("aa2 = " + aa2);
+
+        //다건일경우 무조건 null이 아님을 보장한다. ->없는것을 찾아도 empty를 반환
+        List<Member> result = memberRepository.findListByUsername("asdasdffs");
+        System.out.println("result = " + result.size());
+
+        //다건일경우 null 을 반환 -> exceptio터진것을 자체적으로 ,try catch를 감싸서 null을 반환해줌.
+        Member findMember = memberRepository.findMemberByUsername("asdasdffs");
+        System.out.println("findMember = " + findMember);
+
+        //자바 8인 경우 니가 data있을지 없을지 모르면 optional타입으로 반환을 해!
+        Optional<Member> resultOptional = memberRepository.findOptionalByUsername("asdasdffs");
+        System.out.println("resultOptional = " + resultOptional);
+        //        Member m1 = new Member("AAA",10);
+        //        Member m1 = new Member("AAA",20); 반환이 두개인경우 optinal로 하면
+        //만약 조횐하는 결과가 두개이상일경우 예외가 발생한다.
+
+
+    }
 }

@@ -7,6 +7,7 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member,Long> { //JpaRepository<type,id(pk type)>
 
@@ -32,5 +33,11 @@ public interface MemberRepository extends JpaRepository<Member,Long> { //JpaRepo
 
     @Query("select m from Member m where m.username in :names")
     List<Member> findByNames(@Param("names") List<String> names);
+
+    //반환타입을 유연하게 쓸수 있다.
+    List<Member> findListByUsername(String username);//컬렉션
+    Member findMemberByUsername(String username);//단건
+    Optional<Member> findOptionalByUsername(String username);//단건 Optional
+
 
 }
