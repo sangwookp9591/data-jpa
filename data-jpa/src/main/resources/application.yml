@@ -10,8 +10,10 @@ spring:
       ddl-auto: create #applicaiton 로딩시점에 drop 후 create applicaiton이 끝나도 db에 남아있음.
     properties:
       hibernate:
+        format_sql: true
+      #쿼리가 한줄로 나오는게 아니라 포맷팅이 되어 이쁘게 나올수 있도록 해줌.
        # show_sql: true  콘솔에 찍는 방법이라서 이것보단 아래의 log로 남기자
-        format_sql: true #쿼리가 한줄로 나오는게 아니라 포맷팅이 되어 이쁘게 나올수 있도록 해줌.
+
 
 logging.level:
   org.hibernate.SQL: debug #콘솔에 남기는게 아니라 로그파일로 남길 수 있음.

@@ -1,12 +1,10 @@
 package study.datajpa.entity;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.OneToMany;
+import lombok.*;
+
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,17 +12,17 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(of ={"id","name"})
+@ToString(of = {"id", "name"})
 public class Team {
 
     @Id
     @GeneratedValue
-    @Column(name ="team_id")
+    @Column(name = "team_id")
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "team")//FK 가 없는쪽에
-    private List<Member> members =  new ArrayList<>();
+    @OneToMany(mappedBy = "team")
+    List<Member> members = new ArrayList<>();
 
     public Team(String name) {
         this.name = name;
