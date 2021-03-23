@@ -8,6 +8,10 @@ import javax.persistence.*;
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(of ={"id","username", "age"}) //team은 넣으면 안됨 넣게되면 team의 연관관계까지 타서 출력하기 떄문에
+@NamedQuery(
+        name="Member.findByUsername",
+        query="select m from Member m where m.username =:username"
+)
 //가급적이면 연관관계 필드는 toString안해주는게 좋다.
 public class Member {
 
