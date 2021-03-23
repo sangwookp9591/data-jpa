@@ -13,6 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+//JPA TEST
 @SpringBootTest
 @Transactional
 @Rollback(false)// db에 testdata를 보기위해서
