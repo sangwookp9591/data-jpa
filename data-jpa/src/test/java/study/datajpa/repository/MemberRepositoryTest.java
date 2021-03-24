@@ -14,6 +14,8 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +33,10 @@ class MemberRepositoryTest {
 
     @Autowired
     TeamRepository teamRepository;
+
+    @PersistenceContext
+    EntityManager em;
+
 
     @Test
     public void testMember(){
@@ -241,6 +247,56 @@ class MemberRepositoryTest {
 
 
        // List<Member> page = memberRepository.findByAge(age, pageRequest);
+
+    }
+    @Test
+    public void bulkUpdate(){
+        //given
+        memberRepository.save(new Member("member1",10));
+        memberRepository.save(new Member("member2",19));
+        memberRepository.save(new Member("member3",20));
+        memberRepository.save(new Member("member4",21));
+        memberRepository.save(new Member("member5",40));
+
+        //when
+        int resultCount = memberRepository.bulkAgePlus(20);
+       // em.flush(); //남아있는 변경되지 않는 내용 반영
+        //em.clear(); //영속성 컨텍스트 초기화
+
+        List<Member> member5 = memberRepository.findListByUsername("member5");
+        for (Member member : member5) {
+            System.out.println("member = " + member);
+        }
+
+        //then
+        assertThat(resultCount).isEqualTo(3);
+    }
+
+
+    @Test
+    public void findMemberLazy(){
+        //given
+        //member 1 - > teamA
+        //member 2 - > teamB
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        Member member1 = new Member("member1",10,teamA);
+        Member member2 = new Member("member2",10,teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        
+        em.flush();
+        em.clear();
+        
+        //when
+        List<Member> members = memberRepository.findAll();
+
+        for (Member member : members) {
+            System.out.println("member.getUsername() = " + member.getUsername());
+            System.out.println("member.getTeam().getName() = " + member.getTeam().getName());
+        }
 
     }
 }
