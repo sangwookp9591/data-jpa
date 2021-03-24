@@ -1,5 +1,9 @@
 package study.datajpa.repository;
 
+import org.hibernate.metamodel.model.domain.internal.MapMember;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,6 +42,13 @@ public interface MemberRepository extends JpaRepository<Member,Long> { //JpaRepo
     List<Member> findListByUsername(String username);//컬렉션
     Member findMemberByUsername(String username);//단건
     Optional<Member> findOptionalByUsername(String username);//단건 Optional
+
+
+    @Query(value="select m from Member m left join m.team t"
+            ,countQuery = "select count(m.username) from Member m") //쿼리가 복잡해질경우 카운트쿼리도 복잡한 쿼리를 그대로 가져가서 성능이 느려짐
+    Page<Member> findByAge(int age, Pageable pageable); // 반환타입이 페이지이고, pagable은 쿼리에 대한 조건이 들어간다.
+   // Slice<Member> findByAge(int age, Pageable pageable); //
+
 
 
 }

@@ -4,6 +4,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
@@ -179,6 +183,64 @@ class MemberRepositoryTest {
         //        Member m1 = new Member("AAA",20); 반환이 두개인경우 optinal로 하면
         //만약 조횐하는 결과가 두개이상일경우 예외가 발생한다.
 
+
+    }
+
+
+    @Test
+    public void paging(){
+        //given
+        memberRepository.save(new Member("member1",10));
+        memberRepository.save(new Member("member2",10));
+        memberRepository.save(new Member("member3",10));
+        memberRepository.save(new Member("member4",10));
+        memberRepository.save(new Member("member5",10));
+
+        int age =10; //Spring data jpa는 paging을 0부터 시작한다.
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+        //0page에서 3개 가져와 sorting 조건은 username DESC
+        //sorting 안할려면 안써도된다.
+
+        //when
+        //
+        Page<Member> page = memberRepository.findByAge(age, pageRequest);
+        //long totalCount = memberRepository.totalCount(age);
+        //total count도 지워도된다. 반환 타입을 page로 받으면 totalCount 가 필요하니까라고 하면서  totalCount쿼리까지 같이 날린다.
+        List<Member> content = page.getContent();
+        //long totalElements = page.getTotalElements();
+
+        page.map(member -> new MemberDto(member.getId(),member.getUsername(),null));//내부의 것을 바꿔서 다른결과를 내는 것
+
+        //then
+        assertThat(content.size()).isEqualTo(3);// 현재 페이지 글 수
+        assertThat(page.getTotalElements()).isEqualTo(5);// 전체 수
+        assertThat(page.getNumber()).isEqualTo(0); //현재 페이지
+        assertThat(page.getTotalPages()).isEqualTo(2);// 전체 페이지수
+        assertThat(page.isFirst()).isTrue(); //첫페이지인가?
+        assertThat(page.hasNext()).isTrue(); //다음페이지가 있는가?
+
+        //when
+//        Slice<Member> page = memberRepository.findByAge(age, pageRequest); //반환타입만으로도 page 및 slice로 바꿀 수 있다.
+//
+//
+//
+//
+//
+//
+//
+//        //then
+//        List<Member> content = page.getContent();
+//
+//
+//        assertThat(content.size()).isEqualTo(3); //현재 페이지 글 수
+//      //  assertThat(page.getTotalElements()).isEqualTo(5);// 전체 수
+//        assertThat(page.getNumber()).isEqualTo(0); //현재 페이지
+//      //  assertThat(page.getTotalPages()).isEqualTo(2); 전체 페이지수
+//        assertThat(page.isFirst()).isTrue();// 첫페이지인가?
+//        assertThat(page.hasNext()).isTrue(); //다음페이지가 있는가?
+
+
+       // List<Member> page = memberRepository.findByAge(age, pageRequest);
 
     }
 }
