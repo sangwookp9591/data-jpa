@@ -4,6 +4,7 @@ import org.hibernate.metamodel.model.domain.internal.MapMember;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -54,5 +55,22 @@ public interface MemberRepository extends JpaRepository<Member,Long> { //JpaRepo
     @Modifying(clearAutomatically = true)//이게 있어야 jpa executeUpdate()가 실행된다.
     @Query("update Member m set m.age =m.age +1 where m.age >=:age")
     int bulkAgePlus(@Param("age") int age);
+
+    @Query("select m from Member m left join fetch m.team")
+    List<Member> findMemberFetchJoin();
+
+    //override후 entitygraph 설정
+    @Override
+    @EntityGraph(attributePaths = {"team"}) //jpql을 짜기싫으면
+    List<Member> findAll(); //member 와 team 조회
+
+    //JPQL + 엔티티 그래프 //쿼리를 짯는데 패치조인만 추가하고 싶을 경우
+    @EntityGraph(attributePaths = {"team"})
+    @Query("select m from Member m")
+    List<Member> findMemberEntityGraph();
+
+    //메서드 이름으로 쿼리에서 특히 편리하다. //회원조회할때 왠만하면 팀을 같이 조회하는 경우
+    @EntityGraph(attributePaths = {"team"})
+    List<Member> findEntityGraphByUsername(@Param("username") String username);
 
 }
