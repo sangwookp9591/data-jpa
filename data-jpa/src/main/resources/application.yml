@@ -13,6 +13,12 @@ spring:
         format_sql: true
       #쿼리가 한줄로 나오는게 아니라 포맷팅이 되어 이쁘게 나올수 있도록 해줌.
        # show_sql: true  콘솔에 찍는 방법이라서 이것보단 아래의 log로 남기자
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 1000
+        one-indexed-parameters: true
 
 
 logging.level:
