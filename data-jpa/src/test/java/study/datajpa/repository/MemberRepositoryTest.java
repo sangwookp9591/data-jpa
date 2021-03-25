@@ -300,4 +300,24 @@ class MemberRepositoryTest {
         }
 
     }
+
+    @Test
+    public void queryHint(){
+        //given
+        Member member1 = memberRepository.save(new Member("member1", 10));
+
+        em.flush(); //db에 날라감
+        em.clear(); //초기화
+
+        //when
+        Member findMember = memberRepository.findReadOnlyByUsername("member1");//읽을때부터 readonly true면 내부적으로 성능최적화를하여 snapshot을 안만들고 변경안된다고 감지하고 무시한다.
+        findMember.setUsername("member2");
+
+        em.flush();
+    }
+
+    @Test
+    public void callCustom(){
+        List<Member> result = memberRepository.findMemberCustom();
+    }
 }

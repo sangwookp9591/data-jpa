@@ -4,18 +4,17 @@ import org.hibernate.metamodel.model.domain.internal.MapMember;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 
+import javax.persistence.LockModeType;
+import javax.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member,Long> { //JpaRepository<type,id(pk type)>
+public interface MemberRepository extends JpaRepository<Member,Long> ,MemberRepositoryCustom{ //JpaRepository<type,id(pk type)>
 
     List<Member> findByUsernameAndAgeGreaterThan(String username,int age);
 
@@ -72,5 +71,17 @@ public interface MemberRepository extends JpaRepository<Member,Long> { //JpaRepo
     //메서드 이름으로 쿼리에서 특히 편리하다. //회원조회할때 왠만하면 팀을 같이 조회하는 경우
     @EntityGraph(attributePaths = {"team"})
     List<Member> findEntityGraphByUsername(@Param("username") String username);
+
+
+    @QueryHints(value =@QueryHint(name = "org.hibernate.readOnly",value = "true"))
+    Member findReadOnlyByUsername(String username);
+
+
+    //select for update -  db에 select할떄 다른애들 함부로 건들지마
+    @Lock(LockModeType.PESSIMISTIC_WRITE) //Javax.persistent이기때문에 JPA꺼다
+    List<Member> findLockByUsername(String name);
+
+    //MemberRepository는 다인터페이스라서 부모까지합쳐서 다구현을 해야한다.
+    //커스텀할 기능 하나만 쓰고싶다면?
 
 }
