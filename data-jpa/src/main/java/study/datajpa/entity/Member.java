@@ -13,7 +13,7 @@ import javax.persistence.*;
         query="select m from Member m where m.username =:username"
 )
 //가급적이면 연관관계 필드는 toString안해주는게 좋다.
-public class Member extends JpaBaseEntity{
+public class Member extends BaseEntity{
 
     @Id
     @GeneratedValue
