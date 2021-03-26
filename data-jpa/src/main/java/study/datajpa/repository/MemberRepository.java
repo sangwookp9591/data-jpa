@@ -84,4 +84,9 @@ public interface MemberRepository extends JpaRepository<Member,Long> ,MemberRepo
     //MemberRepository는 다인터페이스라서 부모까지합쳐서 다구현을 해야한다.
     //커스텀할 기능 하나만 쓰고싶다면?
 
+    //뭔가 엔티티가 아니라 다른게 들어왓네 하고 확인하고, 생성자의 파라미터 명을 분석한다. 파라미터 명이 달라지면 안된다.
+    //List<UsernameOnlyDto> findProjectionsUsername(@Param("username") String username);
+    <T> List<T> findProjectionsUsername(@Param("username") String username, Class<T> type);
+
+
 }

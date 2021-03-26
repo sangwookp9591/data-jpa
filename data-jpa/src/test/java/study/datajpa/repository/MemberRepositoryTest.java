@@ -320,4 +320,31 @@ class MemberRepositoryTest {
     public void callCustom(){
         List<Member> result = memberRepository.findMemberCustom();
     }
+
+    @Test
+    public  void projections(){
+        //given
+
+        Team teamA =new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1",0,teamA);
+        Member m2 =  new Member("m2",0,teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+        //when m1,m2만 뽑을것
+
+        List<NestedClosedProjections> result = memberRepository.findProjectionsUsername("m1",NestedClosedProjections.class);
+
+        for (NestedClosedProjections usernameOnly : result) {
+            System.out.println("usernameOnly = " + usernameOnly);
+
+        }
+
+        //then
+
+    }
 }
